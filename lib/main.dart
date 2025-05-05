@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Quiz App',
+      debugShowCheckedModeBanner: false, // 👈 Esto quita el banner "DEBUG"
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

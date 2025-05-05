@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'encuesta_habitos_compra.dart'; // <- Usamos este en lugar de HabitosCompraQuiz
+import 'encuesta_habitos_compra.dart';
+import 'package:app_encuestas/excel_helper.dart'; // Asegúrate de tener este import
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  void _descargarExcel(BuildContext context) async {
+    // Puedes personalizar este método si quieres mostrar un loading, etc.
+    try {
+      await guardarRespuestasEnExcel({}); // Solo para forzar la creación o descarga
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('📄 Archivo Excel generado o actualizado')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Error al descargar Excel: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +37,16 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: const Color(0xFF2E7D32),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings), // Cambié el ícono de descarga por el ícono de ajustes
+            onPressed: () {
+              // Aquí puedes agregar la acción que desees para este ícono
+              print('Ajustes presionados');
+            },
+            tooltip: 'Ajustes',
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -48,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                     'Hábitos de Compra',
                     Icons.shopping_bag,
                     const Color(0xFF558B2F),
-                    const EncuestaHabitosCompra(), // <- aquí el nuevo widget
+                    const EncuestaHabitosCompra(),
                   ),
                 ],
               ),
@@ -59,7 +84,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuizCard(BuildContext context, String title, IconData icon, Color color, Widget page) {
+  Widget _buildQuizCard(
+      BuildContext context, String title, IconData icon, Color color, Widget page) {
     return InkWell(
       borderRadius: BorderRadius.circular(15),
       onTap: () {
@@ -113,3 +139,5 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
+

@@ -4,7 +4,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Future<void> guardarRespuestasEnExcel(Map<String, dynamic> respuestas) async {
-  if (await Permission.storage.request().isDenied) return;
+  final status = await Permission.storage.request();
+  if (!status.isGranted) return;
 
   final dir = await getExternalStorageDirectory();
   final path = '${dir!.path}/resultados_encuesta.xlsx';
@@ -14,31 +15,32 @@ Future<void> guardarRespuestasEnExcel(Map<String, dynamic> respuestas) async {
   Sheet sheet;
 
   if (await file.exists()) {
-    // Leer archivo existente
     final bytes = await file.readAsBytes();
     excel = Excel.decodeBytes(bytes);
-    sheet = excel['Respuestas'];
+    sheet = excel['Respuestas'] ?? excel.sheets.values.first;
   } else {
-    // Crear nuevo Excel
     excel = Excel.createExcel();
     sheet = excel['Respuestas'];
-    sheet.appendRow(['NOMBRE', 'POBLACIÓN', 'FECHA', 'WHATSAPP', 'EMAIL', ...respuestas.keys]);
+    sheet.appendRow([
+      'NOMBRE',
+      'POBLACIÓN',
+      'FECHA',
+      'WHATSAPP',
+      'EMAIL',
+      ...respuestas.keys.where(_esPregunta)
+    ]);
   }
 
-  // Crear fila de datos
   final fila = [
     respuestas['NOMBRE'] ?? '',
     respuestas['POBLACIÓN'] ?? '',
     respuestas['FECHA'] ?? '',
     respuestas['WHATSAPP'] ?? '',
     respuestas['EMAIL'] ?? '',
-    ...respuestas.entries.where((e) =>
-        !['NOMBRE', 'POBLACIÓN', 'FECHA', 'WHATSAPP', 'EMAIL'].contains(e.key)).map((e) {
-      if (e.value is List) {
-        return (e.value as List).join(', ');
-      }
+    ...respuestas.entries.where((e) => _esPregunta(e.key)).map((e) {
+      if (e.value is List) return (e.value as List).join(', ');
       return e.value.toString();
-    })
+    }),
   ];
 
   sheet.appendRow(fila);
@@ -46,6 +48,10 @@ Future<void> guardarRespuestasEnExcel(Map<String, dynamic> respuestas) async {
   final fileBytes = excel.encode();
   await file.writeAsBytes(fileBytes!);
 
-  print('✅ Datos agregados al archivo Excel en: $path');
+  print('✅ Datos guardados en Excel: $path');
 }
+
+bool _esPregunta(String key) =>
+    !['NOMBRE', 'POBLACIÓN', 'FECHA', 'WHATSAPP', 'EMAIL'].contains(key);
+
 
