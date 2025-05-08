@@ -1,23 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'encuesta_habitos_compra.dart';
-import 'package:app_encuestas/excel_helper.dart'; // Asegúrate de tener este import
+import 'package:app_encuestas/excel_helper.dart'; // Asegúrate que este archivo existe
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String _idioma = 'es'; // Idioma por defecto: 'es' (español)
+
   void _descargarExcel(BuildContext context) async {
-    // Puedes personalizar este método si quieres mostrar un loading, etc.
     try {
-      await guardarRespuestasEnExcel({}); // Solo para forzar la creación o descarga
+      await guardarRespuestasEnExcel({});
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('📄 Archivo Excel generado o actualizado')),
+        SnackBar(
+          content: Text(_idioma == 'es'
+              ? '📄 Archivo Excel generado o actualizado'
+              : '📄 Excel file generated or updated'),
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('❌ Error al descargar Excel: $e')),
+        SnackBar(
+          content: Text(_idioma == 'es'
+              ? '❌ Error al descargar Excel: $e'
+              : '❌ Error downloading Excel: $e'),
+        ),
       );
     }
+  }
+
+  void _cambiarIdioma() {
+    setState(() {
+      _idioma = _idioma == 'es' ? 'en' : 'es';
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(_idioma == 'es'
+            ? '🌐 Idioma cambiado a Español'
+            : '🌐 Language changed to English'),
+      ),
+    );
   }
 
   @override
@@ -38,13 +65,34 @@ class HomeScreen extends StatelessWidget {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings), // Cambié el ícono de descarga por el ícono de ajustes
-            onPressed: () {
-              // Aquí puedes agregar la acción que desees para este ícono
-              print('Ajustes presionados');
-            },
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.settings),
             tooltip: 'Ajustes',
+            onSelected: (String value) {
+              if (value == 'idioma') {
+                _cambiarIdioma();
+              } else if (value == 'descargar') {
+                _descargarExcel(context);
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem<String>(
+                value: 'idioma',
+                child: ListTile(
+                  leading: const Icon(Icons.language),
+                  title: Text(_idioma == 'es' ? 'Cambiar idioma' : 'Change language'),
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'descargar',
+                child: ListTile(
+                  leading: const Icon(Icons.download),
+                  title: Text(_idioma == 'es'
+                      ? 'Descargar archivo Excel'
+                      : 'Download Excel file'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -54,7 +102,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Selecciona un tema',
+              _idioma == 'es' ? 'Selecciona un tema' : 'Select a topic',
               style: GoogleFonts.raleway(
                 fontSize: 22,
                 fontWeight: FontWeight.w600,
@@ -70,7 +118,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   _buildQuizCard(
                     context,
-                    'Hábitos de Compra',
+                    _idioma == 'es' ? 'Hábitos de Compra' : 'Shopping Habits',
                     Icons.shopping_bag,
                     const Color(0xFF558B2F),
                     const EncuestaHabitosCompra(),
@@ -96,7 +144,6 @@ class HomeScreen extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: color.withOpacity(0.9),
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -118,11 +165,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 40,
-              color: Colors.white,
-            ),
+            Icon(icon, size: 40, color: Colors.white),
             const SizedBox(height: 10),
             Text(
               title,
@@ -139,5 +182,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
 
 
