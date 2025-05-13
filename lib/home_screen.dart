@@ -101,6 +101,13 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Image.asset(
+                'assets/logo.png',
+                height: 100,
+              ),
+            ),
+            const SizedBox(height: 20),
             Text(
               _idioma == 'es' ? 'Selecciona un tema' : 'Select a topic',
               style: GoogleFonts.raleway(
@@ -182,6 +189,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
 
 

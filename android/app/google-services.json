@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "211171371696",
+    "project_id": "wow-encuestas",
+    "storage_bucket": "wow-encuestas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211171371696:android:8f269f670627e5ad706975",
+        "android_client_info": {
+          "package_name": "com.example.app_Encuestas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4O152_h0e3biyf0jJpc5noXA2a3CMxOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211171371696:android:2ea7268456b2da8c706975",
+        "android_client_info": {
+          "package_name": "com.example.wowEncuestas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4O152_h0e3biyf0jJpc5noXA2a3CMxOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,10 +21,10 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.app_encuestas"
+        applicationId = "com.example.app_Encuestas"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdkversion = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -42,3 +42,10 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies{
+    implementation platform('com.google.firebase:firebase-bom:33.13.0')
+implementation 'com.google.firebase:firebase-analytics' // O el que uses, ej. auth, firestore, etc.
+}
+
+apply plugin: 'com.google.gms.google-services'
