@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'encuesta_habitos_compra.dart';
-import 'package:app_encuestas/excel_helper.dart'; // Asegúrate que este archivo existe
+import 'package:app_encuestas/excel_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String _idioma = 'es'; // Idioma por defecto: 'es' (español)
+  String _idioma = 'es';
 
   void _descargarExcel(BuildContext context) async {
     try {
@@ -47,6 +47,28 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _mostrarQR() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          _idioma == 'es' ? 'Código QR de la aplicación' : 'App QR Code',
+          style: GoogleFonts.raleway(fontWeight: FontWeight.bold),
+        ),
+        content: Image.asset(
+          'assets/qr_app.png',
+          height: 200,
+        ),
+        actions: [
+          TextButton(
+            child: Text(_idioma == 'es' ? 'Cerrar' : 'Close'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 _cambiarIdioma();
               } else if (value == 'descargar') {
                 _descargarExcel(context);
+              } else if (value == 'mostrar_qr') {
+                _mostrarQR();
               }
             },
             itemBuilder: (BuildContext context) => [
@@ -90,6 +114,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: Text(_idioma == 'es'
                       ? 'Descargar archivo Excel'
                       : 'Download Excel file'),
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'mostrar_qr',
+                child: ListTile(
+                  leading: const Icon(Icons.qr_code),
+                  title: Text(_idioma == 'es'
+                      ? 'Mostrar QR de la aplicación'
+                      : 'Show App QR Code'),
                 ),
               ),
             ],
@@ -189,5 +222,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
 
 
