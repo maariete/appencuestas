@@ -14,24 +14,54 @@ class _HomeScreenState extends State<HomeScreen> {
   String _idioma = 'es';
 
   void _descargarExcel(BuildContext context) async {
-    try {
-      await guardarRespuestasEnExcel({});
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_idioma == 'es'
-              ? '📄 Archivo Excel generado o actualizado'
-              : '📄 Excel file generated or updated'),
+    TextEditingController _fileNameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(_idioma == 'es' ? 'Nombre del archivo Excel' : 'Excel file name'),
+        content: TextField(
+          controller: _fileNameController,
+          decoration: InputDecoration(
+            hintText: _idioma == 'es' ? 'Introduce el nombre del archivo' : 'Enter file name',
+          ),
         ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_idioma == 'es'
-              ? '❌ Error al descargar Excel: $e'
-              : '❌ Error downloading Excel: $e'),
-        ),
-      );
-    }
+        actions: [
+          TextButton(
+            child: Text(_idioma == 'es' ? 'Cancelar' : 'Cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: Text(_idioma == 'es' ? 'Guardar' : 'Save'),
+            onPressed: () async {
+              Navigator.of(context).pop();
+              String fileName = _fileNameController.text.isNotEmpty
+                  ? _fileNameController.text
+                  : 'resultados_encuesta'; // Nombre por defecto
+
+              try {
+                await guardarRespuestasEnExcel({}, fileName); // Ahora pasamos el nombre
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(_idioma == 'es'
+                        ? '📄 Archivo Excel guardado como "$fileName.xlsx"'
+                        : '📄 Excel file saved as "$fileName.xlsx"'),
+                  ),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(_idioma == 'es'
+                        ? '❌ Error al guardar el archivo Excel: $e'
+                        : '❌ Error saving Excel file: $e'),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   void _cambiarIdioma() {
@@ -121,8 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.qr_code),
                   title: Text(_idioma == 'es'
-                      ? 'Mostrar QR de la aplicación'
-                      : 'Show App QR Code'),
+                      ? 'Mostrar código QR'
+                      : 'QR Code'),
                 ),
               ),
             ],
@@ -222,6 +252,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+
 
 
 

@@ -3,13 +3,14 @@ import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-Future<void> guardarRespuestasEnExcel(Map<String, dynamic> respuestas) async {
+Future<void> guardarRespuestasEnExcel(Map<String, dynamic> respuestas , String fileName) async {
   final status = await Permission.storage.request();
   if (!status.isGranted) return;
 
   final dir = await getExternalStorageDirectory();
-  final path = '${dir!.path}/resultados_encuesta.xlsx';
+  final path = '${dir!.path}/$fileName.xlsx'; // USO CORRECTO DEL NOMBRE
   final file = File(path);
+
 
   Excel excel;
   Sheet sheet;
@@ -53,5 +54,3 @@ Future<void> guardarRespuestasEnExcel(Map<String, dynamic> respuestas) async {
 
 bool _esPregunta(String key) =>
     !['NOMBRE', 'POBLACIÓN', 'FECHA', 'WHATSAPP', 'EMAIL'].contains(key);
-
-
