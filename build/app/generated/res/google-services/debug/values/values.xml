@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">211171371696</string>
+    <string name="google_api_key" translatable="false">AIzaSyC4O152_h0e3biyf0jJpc5noXA2a3CMxOI</string>
+    <string name="google_app_id" translatable="false">1:211171371696:android:8f269f670627e5ad706975</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyC4O152_h0e3biyf0jJpc5noXA2a3CMxOI</string>
+    <string name="google_storage_bucket" translatable="false">wow-encuestas.firebasestorage.app</string>
+    <string name="project_id" translatable="false">wow-encuestas</string>
+</resources>

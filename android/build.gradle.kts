@@ -1,3 +1,16 @@
+plugins {
+    id("org.jetbrains.kotlin.android") version "2.1.21" apply false
+}
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.google.gms:google-services:4.4.2")
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -12,6 +25,7 @@ subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
 }
@@ -19,8 +33,4 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
-buildscript {
-    dependencies {
-        classpath 'com.google.gms:google-services:4.4.2' // 👈 Añade esta línea
-    }
-}
+
