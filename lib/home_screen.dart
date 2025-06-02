@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // ✅ AÑADIDO
 import 'encuesta_habitos_compra.dart';
 import 'package:app_encuestas/excel_helper.dart';
 
@@ -37,10 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.of(context).pop();
               String fileName = _fileNameController.text.isNotEmpty
                   ? _fileNameController.text
-                  : 'resultados_encuesta'; // Nombre por defecto
+                  : 'resultados_encuesta';
 
               try {
-                await guardarRespuestasEnExcel({}, fileName); // Ahora pasamos el nombre
+                await guardarRespuestasEnExcel({}, fileName);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(_idioma == 'es'
@@ -99,6 +100,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> _cerrarSesion() async {
+    try {
+      await FirebaseAuth.instance.signOut(); // ✅ Cierra sesión correctamente
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_idioma == 'es'
+              ? '🔒 Sesión cerrada'
+              : '🔒 Logged out'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_idioma == 'es'
+              ? '❌ Error al cerrar sesión: $e'
+              : '❌ Error logging out: $e'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,6 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 _descargarExcel(context);
               } else if (value == 'mostrar_qr') {
                 _mostrarQR();
+              } else if (value == 'cerrar_sesion') {
+                _cerrarSesion(); // ✅ Esto ahora funciona correctamente
               }
             },
             itemBuilder: (BuildContext context) => [
@@ -153,6 +177,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: Text(_idioma == 'es'
                       ? 'Mostrar código QR'
                       : 'QR Code'),
+                ),
+              ),
+              PopupMenuItem<String>(
+                value: 'cerrar_sesion',
+                child: ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: Text(_idioma == 'es' ? 'Cerrar sesión' : 'Log out'),
                 ),
               ),
             ],
@@ -203,7 +234,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildQuizCard(
-      BuildContext context, String title, IconData icon, Color color, Widget page) {
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    Widget page,
+  ) {
     return InkWell(
       borderRadius: BorderRadius.circular(15),
       onTap: () {
@@ -252,6 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
 
 
 
